@@ -63,7 +63,7 @@ Example slurm script. Note the following:
 	export TMPD=/tmp/$SLURM_JOB_ID
 	export XALT_EXECUTABLE_TRACKING=no
 	export INP=2832985738.genes.faa
-	$IPSPATH/interproscan.sh --tempdir $TMPD -i $SCR/$INP -f tsv -b $SCR/$SLURM_JOB_ID ```
+	$IPSPATH/interproscan.sh --tempdir $TMPD -i $SCR/$INP -f tsv -b $SCR/$SLURM_JOB_ID 
 
 This directory contains 3 example slurm scripts:
 * 4 CPU's
