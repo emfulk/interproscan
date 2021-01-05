@@ -41,7 +41,7 @@ Example slurm script. Note the following:
 1. Input variable is hard-coded
 1. Paths are dependent on usernames/netids and require having interproscan in the /projects directory (more below)
 
-	#!/bin/sh
+	```#!/bin/sh
 
 	#SBATCH --account=commons
 	#SBATCH --partition=commons
@@ -63,7 +63,7 @@ Example slurm script. Note the following:
 	export TMPD=/tmp/$SLURM_JOB_ID
 	export XALT_EXECUTABLE_TRACKING=no
 	export INP=2832985738.genes.faa
-	$IPSPATH/interproscan.sh --tempdir $TMPD -i $SCR/$INP -f tsv -b $SCR/$SLURM_JOB_ID 
+	$IPSPATH/interproscan.sh --tempdir $TMPD -i $SCR/$INP -f tsv -b $SCR/$SLURM_JOB_ID ```
 
 This directory contains 3 example slurm scripts:
 * 4 CPU's
