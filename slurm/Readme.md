@@ -1,4 +1,4 @@
-# Using interproscan with slurm to parallelize
+#Parallelizing interproscan with slurm
 
 The instructions here are customized for the Rice NOTS cluster
 
