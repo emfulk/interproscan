@@ -26,10 +26,10 @@ C. Some settings specific to our system:
 1. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable this feature - it is not necessary and causes the Perl scripts to crash and fail
 1. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work. More on this below.
 1. Requisite modules:
- 1. Java > 11
- 1. CGGcore/8.3.0
- 1. Python/3.7.2
- 1. Perl/5.30.0
+  1. Java > 11
+  1. CGGcore/8.3.0
+  1. Python/3.7.2
+  1. Perl/5.30.0
 
 ## II. Executing in slurm
 
