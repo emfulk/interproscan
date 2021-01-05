@@ -67,11 +67,11 @@ Example slurm script. Note the following:
 
 This directory contains 3 example slurm scripts:
 * 4 CPU's
- * ips_smp_4cpu.sbatch (4cpu example that runs on commons)
-  * plus outputs in subdirectory for examination
- * ips_smp_4cpu.scavenge (4cpu example that runs on scavenge queue)
+   * ips_smp_4cpu.sbatch (4cpu example that runs on commons)
+      * plus outputs in subdirectory for examination
+   * ips_smp_4cpu.scavenge (4cpu example that runs on scavenge queue)
 * 8 CPU's
- * ips_smp_8cpu.sbatch
+   * ips_smp_8cpu.sbatch
 
 Which would be submitted, for example, with `sbatch ips_smp_4cpu_scavenge.sbatch`
 
@@ -80,13 +80,13 @@ Which would be submitted, for example, with `sbatch ips_smp_4cpu_scavenge.sbatch
 1. Validate outputs
 1. Need better documentation on the file structure
 1. Trying different node settings (using the same input file) for:
- 1. Resource basic requirements (how few cores & how little RAM can you run this with)
- 1. Performance improvement on resources (how much does this speed up your job)
- 1. Consider this on scavenge queue in order to get results faster
- 1. Consider ssh'ing into nodes to check resource usage in real time
+   1. Resource basic requirements (how few cores & how little RAM can you run this with)
+   1. Performance improvement on resources (how much does this speed up your job)
+   1. Consider this on scavenge queue in order to get results faster
+   1. Consider ssh'ing into nodes to check resource usage in real time
 1. How much variability do we see--use a random selection of a few input files to:
- 1. See if your basic requirements change -- does it crash? -- very unlikely
- 1. See how much your run-time varies -- does it change? -- likely
+   1. See if your basic requirements change -- does it crash? -- very unlikely
+   1. See how much your run-time varies -- does it change? -- likely
 
 
 ### IV. Anticipated steps for making this a job array:
@@ -104,10 +104,10 @@ Why the above settings were chosen:
 
 1. Why job arrays? because cluster mode does not appear to work with slurm
 1. in generating matches:
- 1. java process spawns threads, probably talking to the remote database
+   1. java process spawns threads, probably talking to the remote database
 1. creates tons of small temp files, databases, etc.
- 1. which runs fastest if it's writing to /tmp instead of /scratch (3 vs. 1-1.5 hours)
- 1. and if it's running on a single node, where it appears to multithread well
+   1. which runs fastest if it's writing to /tmp instead of /scratch (3 vs. 1-1.5 hours)
+   1. and if it's running on a single node, where it appears to multithread well
 1. input and output files, relatively small, can be read/written to/from /scratch
 
 Potential down-the-road optimization:
