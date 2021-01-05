@@ -8,7 +8,7 @@ A. Download repo into /projects
 
     git clone https://github.com/rice-crc/
     
-B. Following [https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py](interproscan installation instructions):
+B. Following [interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
 
 First launch an interactive job
 
@@ -24,7 +24,7 @@ Then load requisite modules and run the initial setup script
 C. Some settings specific to our system:
 
 1. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable this feature - it is not necessary and causes the Perl scripts to crash and fail
-1. [https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode](Cluster mode) appears not to work. More on this below.
+1. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work. More on this below.
 1. Requisite modules:
  1. Java > 11
  1. CGGcore/8.3.0
