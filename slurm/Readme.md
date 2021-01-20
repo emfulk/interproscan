@@ -41,7 +41,7 @@ Example slurm script. Note the following:
 1. Input variable is hard-coded
 1. Paths are dependent on usernames/netids and require having interproscan in the /projects directory (more below)
 
-	```#!/bin/sh
+	#!/bin/sh
 
 	#SBATCH --account=commons
 	#SBATCH --partition=commons
@@ -75,9 +75,34 @@ This directory contains 3 example slurm scripts:
 
 Which would be submitted, for example, with `sbatch ips_smp_4cpu_scavenge.sbatch`
 
-### III. Next Steps
+### III. Job Arrays and Checkpointing
+(Jan 19)
 
-1. Validate outputs
+1. Checkpointing
+	1. Have set up a checkpointing workflow which assumes
+		1. 1 faa file per task
+		1. A tripartite directory structure for faa files: new, working, done
+		1. An output directory for finished tsv files
+	1. checkpoint.py
+		1. Reads
+			1. slurm output files' contents to see which faa files have been started
+			1. the filenames of .tsv files to see which files have finished
+			1. the .faa filenames still in the 'new' directory
+		1. Compares & moves
+			1. output directory contents to .faa filenames in 'new' and 'working'. matching faa files are moved to 'done' folder.
+			1. slurm file contents to .faa filenames in 'new'. matching faa files are moved to 'working' folder.
+		1. Writes
+			1. 'unfinished.txt'
+			1. this file lists all the .faa filenames in the 'new' directory that have not been processed
+1. ips_checkpoint.sbatch
+	1. kicked off as an array: `sbatch --array=1-N ips_checkpoint.sbatch`
+	1. opens 'unfinished.txt'
+	1. pulls the integer line number from that file as its input filename
+	1. prints the input filename to the stdoutput file for parsing later
+	1. embeds the slurm job id, array task id, and faa id number into the .tsv output filename
+			
+### IV. Still need
+	
 1. Need better documentation on the file structure
 1. Trying different node settings (using the same input file) for:
    1. Resource basic requirements (how few cores & how little RAM can you run this with)
@@ -88,15 +113,11 @@ Which would be submitted, for example, with `sbatch ips_smp_4cpu_scavenge.sbatch
    1. See if your basic requirements change -- does it crash? -- very unlikely
    1. See how much your run-time varies -- does it change? -- likely
 
-
-### IV. Anticipated steps for making this a job array:
-
 Mostly, this is about determining where the input and output files go specifically
 
 1. Probably want to set --tasks-per-core=1 and nodes=ntasks
 1. Make INP variable into a parameter rather than a hard-coded filename
 1. Change output filename to correspond to that INP variable
-
 
 ### V. Extra notes
 
