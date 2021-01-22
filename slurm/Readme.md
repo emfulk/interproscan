@@ -75,31 +75,12 @@ This directory contains 3 example slurm scripts:
 
 Which would be submitted, for example, with `sbatch ips_smp_4cpu_scavenge.sbatch`
 
-### III. Job Arrays and Checkpointing
-(Jan 19)
+### III. Templating
+(Jan 22)
 
-1. Checkpointing
-	1. Have set up a checkpointing workflow which assumes
-		1. 1 faa file per task
-		1. A tripartite directory structure for faa files: new, working, done
-		1. An output directory for finished tsv files
-	1. checkpoint.py
-		1. Reads
-			1. slurm output files' contents to see which faa files have been started
-			1. the filenames of .tsv files to see which files have finished
-			1. the .faa filenames still in the 'new' directory
-		1. Compares & moves
-			1. output directory contents to .faa filenames in 'new' and 'working'. matching faa files are moved to 'done' folder.
-			1. slurm file contents to .faa filenames in 'new'. matching faa files are moved to 'working' folder.
-		1. Writes
-			1. 'unfinished.txt'
-			1. this file lists all the .faa filenames in the 'new' directory that have not been processed
-1. ips_checkpoint.sbatch
-	1. kicked off as an array: `sbatch --array=1-N ips_checkpoint.sbatch`
-	1. opens 'unfinished.txt'
-	1. pulls the integer line number from that file as its input filename
-	1. prints the input filename to the stdoutput file for parsing later
-	1. embeds the slurm job id, array task id, and faa id number into the .tsv output filename
+Moved away from job array checkpointing to a slurm template writer.
+
+This will allow us, down the line, to dynamically set memory, CPU's, wall-time according to the job's needs, once we have a clear idea of the relation between resources and input filesize.
 			
 ### IV. Still need
 	
