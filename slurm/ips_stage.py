@@ -40,8 +40,9 @@ failures=[i for i in os.listdir(os.path.join(scratch_dir,faa_failures)) if i.end
 successes=[i for i in os.listdir(os.path.join(scratch_dir,faa_outbox)) if i.endswith('.faa')]
 tsv_outfiles=[i for i in os.listdir(os.path.join(scratch_dir,tsv_outputs)) if i.endswith('.tsv')]
 slurm_outfile_dictionary={}
-slurm_outfiles=[i for i in os.listdir(scratch_dir) if i.endswith('.out')]
-for f in slurm_outfiles:
+scratch_slurm_outfiles=[i for i in os.listdir(scratch_dir) if i.endswith('.out')]
+#first, scan all the slurm*.out files to create a lookup of faa id's --> slurm job id's
+for f in scratch_slurm_outfiles:
 	d=open(f,'r')
 	t=d.read()
 	d.close()
@@ -53,28 +54,25 @@ for f in slurm_outfiles:
 
 def ship_out(filenames,faa_id_pattern,inpath,outpath,include_slurm=1):
 	for f in filenames:
-		os.system('mv %s %s' %(os.path.join(inpath,f),os.path.join(outpath,f)))
+		os.system('mv %s %s' %(os.path.join(inpath,f),os.path.join(outpath)))
 		if include_slurm==1:
 			faa_id=re.search(faa_id_pattern,f).group(0)
 			slurm_outfile=slurm_outfile_dictionary[faa_id]
-			print(slurm_outfile)
 			sbatch_file=faa_id+'.sbatch'
 			print(f,slurm_outfile,sbatch_file)
 			for s in [slurm_outfile,sbatch_file]:
-				os.system('mv %s %s' %(os.path.join(scratch_dir,s),os.path.join(work_dir,slurm_files,s)))
+				os.system('mv %s %s' %(os.path.join(scratch_dir,s),os.path.join(work_dir,slurm_outfiles)))
 
 print("moving finished files to /work")
 
 print(len(failures),'failures:')
-ship_out(failures,re.compile('[0-9]+'),os.path.join(scratch_dir,faa_failures),os.path.join(scratch_dir,faa_failures))
+ship_out(failures,re.compile('[0-9]+'),os.path.join(scratch_dir,faa_failures),os.path.join(work_dir,faa_failures))
 print(len(successes),'successes')
-ship_out(successes,re.compile('[0-9]+'),os.path.join(scratch_dir,faa_outbox),os.path.join(scratch_dir,faa_outbox))
+ship_out(successes,re.compile('[0-9]+'),os.path.join(scratch_dir,faa_outbox),os.path.join(work_dir,faa_outbox))
 ship_out(tsv_outfiles,re.compile('(?<=FAA_ID)[0-9]+'),os.path.join(scratch_dir,tsv_outputs),os.path.join(work_dir,tsv_outputs),include_slurm=0)
-	
-
 
 #get the first N unprocessed faa files from /work
-unprocessed_faa_files=[i for i in os.listdir(os.path.join(work_dir,faa_inbox)) if i.endswith('.faa')]
+unprocessed_faa_files=[i for i in os.listdir(os.path.join(work_dir,faa_inbox)) if i.endswith('.genes.faa')]
 unproc=len(unprocessed_faa_files)
 if unproc==0:
 	"no faa files found. exiting."

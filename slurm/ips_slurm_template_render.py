@@ -14,10 +14,10 @@ def render_template(faa_input_filename):
 	'partition':'commons',
 	'ntasks':'1',
 	'nodes':'1',
-	'cpus-per-task':'8',
+	'cpus-per-task':'4',
 	'threads-per-core':'1',
 	'mem-per-cpu':'2GB',
-	'running-time':'01:30:00',
+	'running-time':'01:00:00',
 	'export':'ALL'
 	}
 		
@@ -27,13 +27,17 @@ def render_template(faa_input_filename):
 	faa_input_filepath=os.path.join(scratch_dir,faa_inbox,faa_input_filename)
 	faa_id=re.search('[0-9]+',faa_input_filename).group(0)
 	tsv_output_filepath=os.path.join(scratch_dir,tsv_outputs,'FAA_ID'+str(faa_id))
-		
+	faa_scratch_outbox=os.path.join(scratch_dir,faa_outbox)
+	faa_scratch_failures=os.path.join(scratch_dir,faa_failures)
+	faa_input_in_failures=os.path.join(scratch_dir,faa_failures,faa_input_filename)
+
 	slurm_body_params={
 	'IPSPATH':IPSPATH,
 	'tsv_output_filepath':tsv_output_filepath,
 	'faa_input_filepath':faa_input_filepath,
-	'faa_outbox':os.path.join(scratch_dir,faa_outbox),
-	'faa_failures':os.path.join(scratch_dir,faa_failures)
+	'faa_scratch_outbox':faa_scratch_outbox,
+	'faa_scratch_failures':faa_scratch_failures,
+	'faa_input_in_failures':faa_input_in_failures
 	}
 	
 	for param in slurm_body_params:
