@@ -1,13 +1,16 @@
-# Parallelizing interproscan with slurm
+# Parallelizing Interproscan with slurm
 
-The instructions here are customized for the Rice NOTS cluster
+These scripts enable batch submission of multiple independent Interproscan analyses that are run in parallel using minimized amounts of computing resources. A user-specified number of input files (genomes) are submitted to a job scheduler as individual jobs. Successfully analyzed files are automatically moved to an outbox, while unsuccessfully analyzed files are moved to a separate folder to be re-run with more resources. This strategy enables unsupervised analysis of large datasets of genomes with less manual oversight by the user. The instructions here are customized for the Rice NOTS cluster, which uses the SLURM job scheduler.
 
-## I. Installation
+![2302_readme](https://user-images.githubusercontent.com/63920521/217164524-d1b2515a-0855-414c-a050-9a60cd63b5cd.png)
+
+## Installation
 
 A. Download repo into /projects
 
     git clone https://github.com/rice-crc/
-    
+
+
 B. Following [interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
 
 First launch an interactive job
@@ -19,7 +22,7 @@ Then load requisite modules and run the initial setup script
     module load Java/12.0.2 GCCcore/8.3.0  Python/3.7.2  Perl/5.30.0 
     python3 initial_setup.py    
 
-(should we include a testing step here before exiting?)
+(Should we include a testing step here before exiting?)
 
 C. Some settings specific to our system:
 
@@ -31,77 +34,27 @@ C. Some settings specific to our system:
    1. Python/3.7.2
    1. Perl/5.30.0
 
-## II. Executing in slurm
 
-Example slurm script. Note the following:
+## Description of files
 
-1. Turns off xalt tracking
-1. Limits the work to 1 node, but with multiple CPU's
-1. Includes some stdoutput for logging
-1. Input variable is hard-coded
-1. Paths are dependent on usernames/netids and require having interproscan in the /projects directory (more below)
+| filename | Description |
+| --- | --- |
+| ips_slurm_settings.py | This is where you define your filepaths for storage and temporary directories and for Interproscan. |
+| ips_slurm_template_render.py | This renders the job template for each input file, and where you specify computational resources (partition, CPUs, memory, runtime, etc.).  |
+| ips_template.sbatch | This is the template. At the start of the job, it moves the input file from the inbox to the failures folder. When the job finishes, it checks for a corresponding .tsv file and, if the job is successful in generating a .tsv output, moves the input file to the outbox.
+| ips_stage.py | This file accepts a single integer argument (e.g. 'ips_stage.py 20') and and pulls the specified number of input files from /work/.../inbox folder to the /scratch/.../inbox/folder. It then renders templates and submits slurm files for each of these jobs. Before moving and submitting new input files, it moves any files in /scratch/.../failures , /scratch/.../outbox, and all .sbatch and slurm*.out files back to the respective /work... folders. |
 
-	#!/bin/sh
+## File structure
 
-	#SBATCH --account=commons
-	#SBATCH --partition=commons
-	#SBATCH --ntasks=1
-	#SBATCH --nodes=1
-	#SBATCH --cpus-per-task=4
-	#SBATCH --threads-per-core=1
-	#SBATCH --mem-per-cpu=2GB
-	#SBATCH --time=01:20:00
-	#SBATCH --export=ALL
+Five subdirectories are created to store input files (in amino acid FASTA format), Interproscan outputs (in tsv format), and SLURM files.
 
-	module load Java/12.0.2 GCCcore/8.3.0  Python/3.7.2  Perl/5.30.0 
+1. faa_inbox: contains input files to be analyzed, in amino acid fasta (.faa) format.
+2. faa_outbox: contains successfully analyzed input files.
+3. faa_failures: contains unsuccessfully analyzed input files.
+4. slurm_files: contains slurm*.out and *.slurm files.
+5. tsv_outputs: contains .tsv outputs from Interproscan.
 
-### III. Templating
-(Jan 22)
+## What other sections/info to include?
 
-Moved away from job array checkpointing to a slurm template writer.
 
-This will allow us, down the line, to dynamically set memory, CPU's, wall-time according to the job's needs, once we have a clear idea of the relation between resources and input filesize.
 
-(Jan 24)
-Tested and debugged the scripts. 4 components:
-* ips_slurm_settings.py -- this is where you define your paths
-* ips_slurm_template_render.py -- this renders the template
-* ips_template.sbatch -- this is the template
-   * note: when the job kicks off it moves all the .faa files from /scratch/.../inbox to /scratch/.../failures
-   * and when it finishes, it checks to see if there is a correponding tsv file in /scratch/.../tsv_outputs and moves the .genes.faa input fileto /scratch/.../outbox
-   * in other words the default is a failed job. This appears to work but I am very much open to there being a case that breaks it.
-* ips_stage.py
-   * invoked with a single integer argument, e.g. `ips_stage.py 7`
-   * pulls in N '...genes.faa' files from the /work/.../inbox folder to the /scratch/.../inbox/folder
-   * then templates and submits the slurm files for each of these jobs
-      * we opted against job arrays, because this way you can do something clever, down the line, in terms of making the ips_slurm_template_render.py file feed in different cpu, ram, and time wall settings according to the anticipated need (probably based on file size)
-   * but before it does the above 2 steps it:
-      * looks for files in /scratch/.../failures and /scratch/.../outbox
-      * moves these and all the .sbatch and slurm*.out files back to respective /work... folders
-			
-### IV. Still need
-	
-1. Trying different node settings (using the same input file) for:
-   1. Resource basic requirements (how few cores & how little RAM can you run this with)
-   1. Performance improvement on resources (how much does this speed up your job)
-   1. Consider this on scavenge queue in order to get results faster
-   1. Consider ssh'ing into nodes to check resource usage in real time
-1. How much variability do we see--use a random selection of a few input files to:
-   1. See if your basic requirements change -- does it crash? -- very unlikely
-   1. See how much your run-time varies -- does it change? -- likely
-
-### V. Extra notes
-
-Why the above settings were chosen:
-
-1. in generating matches:
-   1. java process spawns threads, probably talking to the remote database
-1. creates tons of small temp files, databases, etc.
-   1. which runs fastest if it's writing to /tmp instead of /scratch (3 vs. 1-1.5 hours)
-   1. and if it's running on a single node, where it appears to multithread well
-1. input and output files, relatively small, can be read/written to/from /scratch
-
-Potential down-the-road optimization:
-
-1. we could maybe set up a local instance of the database that has to go out to England as a query, to reduce the overhead that's reliant on network latency.
-1. either way, could we avoid re-running the first database query step every single time to the external database to cut down on the overhead?
