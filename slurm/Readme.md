@@ -37,7 +37,7 @@ This strategy enables analysis of large datasets of genomes with less manual ove
 ## Executing in slurm
 
 1. Define paths for Interproscan and storage and temporary directories hardcoded in ips_slurm_settings.py.
-2. Define computational resources in ips_slurm_template_render.py. Example slurm settings:
+2. Define computational resources in ips_slurm_template_render.py. The majority of input files analyzed thus far have required <4 CPU hours for successful Interproscan analysis. Example slurm settings:
 
     #SBATCH --partition=scavenge
     #SBATCH --ntasks=1
