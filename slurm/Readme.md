@@ -78,5 +78,13 @@ Five subdirectories are created to store input files (in amino acid FASTA format
 
 ## Why these settings were chosen, and ideas for future optimization
 
+The above settings were chosen based on the following parameters of Interproscan runs:
+1. In generating matches between the protein sequences and Interproscan signatures, the java process spawns threads (probably talking to the remote database).
+2. Interproscan creates lots of small temporary files/databases, which runs fastest if it writes to /tmp instead of /scratch (3 vs. 1-1.5 hours). It appears to multithread well if running on a single node.
+3. Input and output files are relatively small and can be read/written to/from /scratch.
+
+We moved away from job array checkpointing to a slurm template write. With additional work, this protentially enables jobs be to dynamically set with memory, CPUs, and job time according to the relationship between input filesize and resources needed. It could also be possible to set up a local instance of the Interpscan database, reducing the overhead related to network latency in querying the remote Interproscan database.
+
+
 
 
