@@ -35,8 +35,27 @@ C. Some settings specific to the Rice NOTS system:
    1. Python/3.7.2
    1. Perl/5.30.0
 
-## 
+## Executing in slurm
 
+ips_template.sbatch is the template used to generate individual jobs. Note the following:
+1. Turns off xalt tracking
+2. Limits the work to 1 node, but with multiple CPUs
+3. Includes some stdoutput for logging
+4. Input variable is hard-coded
+5. Paths are dependent on username/netids and require having Interproscan in the /projects directory.
+
+Example slurm settings:
+
+    #SBATCH --partition=scavenge
+    #SBATCH --ntasks=1
+    #SBATCH --nodes=1
+    #SBATCH --cpus-per-task=4
+    #SBATCH --threads-per-core=1
+    #SBATCH --mem-per-cpu=2GB
+    #SBATCH --time=01:00:00
+    #SBATCH --export=ALL
+
+    module load Java/12.0.2 GCCcore/8.3.0 Python/3.7.2 Perl/5.30.0
 
 ## Description of files
 
@@ -47,7 +66,7 @@ C. Some settings specific to the Rice NOTS system:
 | ips_template.sbatch | This is the template. At the start of the job, it moves the input file from the inbox to the failures folder. When the job finishes, it checks for a corresponding .tsv file and, if the job is successful in generating a .tsv output, moves the input file to the outbox.
 | ips_stage.py | This file accepts a single integer argument (e.g. 'ips_stage.py 20') and and pulls the specified number of input files from /work/.../inbox folder to the /scratch/.../inbox/folder. It then renders templates and submits slurm files for each of these jobs. Before moving and submitting new input files, it moves any files in /scratch/.../failures , /scratch/.../outbox, and all .sbatch and slurm*.out files back to the respective /work... folders. |
 
-## File structure
+## Directory structure
 
 Five subdirectories are created to store input files (in amino acid FASTA format), Interproscan outputs (in tsv format), and SLURM files.
 
