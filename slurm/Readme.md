@@ -15,25 +15,24 @@ This strategy enables analysis of large datasets of genomes with less manual ove
     git clone https://github.com/rice-crc/
 
 2. Following the [Interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
-
-First launch an interactive job
+    1. First launch an interactive job
 
     srun --pty --ntasks=1 --mem-per-cpu=1000m --time=00:30:00 /bin/bash --partition=interactive
     
-Then load requisite modules and run the initial setup script
+    2. Then load requisite modules and run the initial setup script
 
     module load Java/12.0.2 GCCcore/8.3.0  Python/3.7.2  Perl/5.30.0 
     python3 initial_setup.py    
 
 3. Some settings specific to the Rice NOTS system:
 
-a. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable the xalt tracking feature - it is not necessary and causes the Perl scripts to crash and fail
-b. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work
-c. Requisite modules:
-   1. Java > 11
-   1. CGGcore/8.3.0
-   1. Python/3.7.2
-   1. Perl/5.30.0
+    1. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable the xalt tracking feature - it is not necessary and causes the Perl scripts to crash and fail
+    2. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work
+    3. Requisite modules:
+        1. Java>11
+        2. CGGcore/8.3.0
+        3. Python/3.7.2
+        4. Perl/5.30.0
 
 ## Executing in slurm
 
