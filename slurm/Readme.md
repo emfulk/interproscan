@@ -2,7 +2,7 @@
 
 These scripts enable batch submission of multiple independent Interproscan analyses that are run in parallel using minimized amounts of computing resources and user oversight.
 
-A wrapper script (ips_stage.py) pulls a user-specified number of input files (in amino acid FASTA format) and writes an individual job submission for each input file (ips_slurm_template_render.py) based on a template (ips_template.sbatch). For jobs that are successfully completed (i.e. where Interproscan generates a output file with results), the input FASTA file and Interproscan output are moved to a new directory. Input files with jobs that do not successfully complete in the allotted computational resources are moved to a failures folder to be re-run with more resources.
+A wrapper script (ips_stage.py) pulls a user-specified number of input files (in amino acid FASTA format) and writes an individual job submission for each input file (ips_slurm_template_render.py) based on a template (ips_template.sbatch). For jobs that are successfully completed (i.e. where Interproscan generates a output file with results), the input FASTA file and Interproscan output are moved to a new directory. Input files with jobs that do not successfully complete in the allotted computational resources are retained in a failures folder to be re-run with more resources.
 
 This strategy enables analysis of large datasets of genomes with less manual oversight by the user. The instructions here are customized for the Rice NOTS cluster, which uses the SLURM job scheduler.
 
