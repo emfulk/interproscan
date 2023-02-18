@@ -10,11 +10,11 @@ This strategy enables analysis of large datasets of genomes with less manual ove
 
 ## Installation
 
-A. Download repo into /projects
+1. Download repo into /projects
 
     git clone https://github.com/rice-crc/
 
-B. Following the [Interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
+2. Following the [Interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
 
 First launch an interactive job
 
@@ -25,11 +25,11 @@ Then load requisite modules and run the initial setup script
     module load Java/12.0.2 GCCcore/8.3.0  Python/3.7.2  Perl/5.30.0 
     python3 initial_setup.py    
 
-C. Some settings specific to the Rice NOTS system:
+3. Some settings specific to the Rice NOTS system:
 
-1. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable the xalt tracking feature - it is not necessary and causes the Perl scripts to crash and fail
-1. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work
-1. Requisite modules:
+a. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable the xalt tracking feature - it is not necessary and causes the Perl scripts to crash and fail
+b. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work
+c. Requisite modules:
    1. Java > 11
    1. CGGcore/8.3.0
    1. Python/3.7.2
@@ -37,14 +37,8 @@ C. Some settings specific to the Rice NOTS system:
 
 ## Executing in slurm
 
-ips_template.sbatch is the template used to generate individual jobs. Note the following:
-1. Turns off xalt tracking
-2. Limits the work to 1 node, but with multiple CPUs
-3. Includes some stdoutput for logging
-4. Input variable is hard-coded
-5. Paths are dependent on username/netids and require having Interproscan in the /projects directory.
-
-Example slurm settings:
+1. Define filepaths for Interproscan and storage and temporary directories hardcoded in ips_slurm_settings.py.
+2. Define computational resources in ips_slurm_template_render.py. Example slurm settings:
 
     #SBATCH --partition=scavenge
     #SBATCH --ntasks=1
@@ -56,6 +50,13 @@ Example slurm settings:
     #SBATCH --export=ALL
 
     module load Java/12.0.2 GCCcore/8.3.0 Python/3.7.2 Perl/5.30.0
+
+ips_slurm_template_render.py renders the template for individual jobs. Note the following:
+a. Turns off xalt tracking
+b. Limits the work to 1 node, but with multiple CPUs
+c. Includes some stdoutput for logging
+d. Input variable is hard-coded
+e. Paths are dependent on username/netids and require having Interproscan in the /projects directory.
 
 ## Description of files
 
