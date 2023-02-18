@@ -65,7 +65,7 @@ This strategy enables analysis of large datasets of genomes with less manual ove
 | --- | --- |
 | ips_slurm_settings.py | This is where you define your filepaths for storage and temporary directories and for Interproscan. |
 | ips_slurm_template_render.py | This renders the job template for each input file, and where you specify computational resources (partition, CPUs, memory, runtime, etc.).  |
-| ips_template.sbatch | This is the template. At the start of the job, it moves the input file from the inbox to the failures folder. When the job finishes, it checks for a corresponding .tsv file and, if the job is successful in generating a .tsv output, moves the input file to the outbox.
+| ips_template.sbatch | This is the template. At the start of the job, it moves the input file from the inbox to the failures folder. When the job finishes, it checks for a corresponding .tsv file and, if Interproscan is successful in generating a .tsv output, moves the input file to the outbox.
 | ips_stage.py | This file accepts a single integer argument (e.g. 'ips_stage.py 20') and and pulls the specified number of input files from /work/.../inbox folder to the /scratch/.../inbox/folder. It then renders templates and submits slurm files for each of these jobs. Before moving and submitting new input files, it moves any files in /scratch/.../failures , /scratch/.../outbox, and all .sbatch and slurm*.out files back to the respective /work... folders. |
 
 ## Directory structure
