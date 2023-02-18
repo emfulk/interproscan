@@ -55,7 +55,9 @@ This strategy enables analysis of large datasets of genomes with less manual ove
     2. Limits the work to 1 node, but with multiple CPUs
     3. Includes some stdoutput for logging
     4. Input variable is hard-coded
-    5. Paths are dependent on username/netids and require having Interproscan in the /projects directory.
+    5. Paths are dependent on username/netids and require having Interproscan in the /projects directory
+
+3. Generate and submit batches of N files for Interproscan analysis by running `python ips_stage.py N`
 
 ## Description of files
 
@@ -84,7 +86,3 @@ The above settings were chosen based on the following parameters of Interproscan
 3. Input and output files are relatively small and can be read/written to/from /scratch.
 
 We moved away from job array checkpointing to a slurm template write. With additional work, this protentially enables jobs be to dynamically set with memory, CPUs, and job time according to the relationship between input filesize and resources needed. It could also be possible to set up a local instance of the Interpscan database, reducing the overhead related to network latency in querying the remote Interproscan database.
-
-
-
-
