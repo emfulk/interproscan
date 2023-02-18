@@ -1,8 +1,12 @@
 # Parallelizing Interproscan with slurm
 
-These scripts enable batch submission of multiple independent Interproscan analyses that are run in parallel using minimized amounts of computing resources. A user-specified number of input files (genomes) are submitted to a job scheduler as individual jobs. Successfully analyzed files are automatically moved to an outbox, while unsuccessfully analyzed files are moved to a separate folder to be re-run with more resources. This strategy enables unsupervised analysis of large datasets of genomes with less manual oversight by the user. The instructions here are customized for the Rice NOTS cluster, which uses the SLURM job scheduler.
+These scripts enable batch submission of multiple independent Interproscan analyses that are run in parallel using minimized amounts of computing resources and user oversight.
 
-![2302_readme](https://user-images.githubusercontent.com/63920521/217164524-d1b2515a-0855-414c-a050-9a60cd63b5cd.png)
+A wrapper script (ips_stage.py) pulls a user-specified number of input files (in amino acid FASTA format) and writes an individual job submission for each input file (ips_slurm_template_render.py) based on a template (ips_template.sbatch). For jobs that are successfully completed (i.e. where Interproscan generates a output file with results), the input FASTA file and Interproscan output are moved to a new directory. Input files with jobs that do not successfully complete in the allotted computational resources are moved to a failures folder to be re-run with more resources.
+
+This strategy enables unsupervised analysis of large datasets of genomes with less manual oversight by the user. The instructions here are customized for the Rice NOTS cluster, which uses the SLURM job scheduler.
+
+![2302_readme](https://user-images.githubusercontent.com/63920521/219883990-601c660e-2034-4535-9964-c2db0cb1863a.png)
 
 ## Installation
 
@@ -10,8 +14,7 @@ A. Download repo into /projects
 
     git clone https://github.com/rice-crc/
 
-
-B. Following [interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
+B. Following the [Interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
 
 First launch an interactive job
 
@@ -22,17 +25,17 @@ Then load requisite modules and run the initial setup script
     module load Java/12.0.2 GCCcore/8.3.0  Python/3.7.2  Perl/5.30.0 
     python3 initial_setup.py    
 
-(Should we include a testing step here before exiting?)
+C. Some settings specific to the Rice NOTS system:
 
-C. Some settings specific to our system:
-
-1. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable this feature - it is not necessary and causes the Perl scripts to crash and fail
-1. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work. More on this below.
+1. The XALT_EXECUTABLE_TRACKING variable in the slurm script is to disable the xalt tracking feature - it is not necessary and causes the Perl scripts to crash and fail
+1. [Cluster mode](https://interproscan-docs.readthedocs.io/en/latest/ImprovingPerformance.html?highlight=cluster%20mode#running-interproscan-in-cluster-mode) appears not to work
 1. Requisite modules:
    1. Java > 11
    1. CGGcore/8.3.0
    1. Python/3.7.2
    1. Perl/5.30.0
+
+## 
 
 
 ## Description of files
@@ -54,7 +57,7 @@ Five subdirectories are created to store input files (in amino acid FASTA format
 4. slurm_files: contains slurm*.out and *.slurm files.
 5. tsv_outputs: contains .tsv outputs from Interproscan.
 
-## What other sections/info to include?
+
 
 
 
