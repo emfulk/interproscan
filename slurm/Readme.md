@@ -50,7 +50,7 @@ This strategy enables analysis of large datasets of genomes with less manual ove
 
     module load Java/12.0.2 GCCcore/8.3.0 Python/3.7.2 Perl/5.30.0
 
-ips_slurm_template_render.py renders the template for individual jobs. Note the following:
+    ips_slurm_template_render.py renders the template for individual jobs. Note the following:
     1. Turns off xalt tracking
     2. Limits the work to 1 node, but with multiple CPUs
     3. Includes some stdoutput for logging
