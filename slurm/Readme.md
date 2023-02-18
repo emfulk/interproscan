@@ -36,7 +36,7 @@ This strategy enables analysis of large datasets of genomes with less manual ove
 
 ## Executing in slurm
 
-1. Define filepaths for Interproscan and storage and temporary directories hardcoded in ips_slurm_settings.py.
+1. Define paths for Interproscan and storage and temporary directories hardcoded in ips_slurm_settings.py.
 2. Define computational resources in ips_slurm_template_render.py. Example slurm settings:
 
     #SBATCH --partition=scavenge
