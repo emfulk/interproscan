@@ -76,7 +76,7 @@ Five subdirectories are created to store input files (in amino acid FASTA format
 4. slurm_files: contains slurm*.out and *.slurm files.
 5. tsv_outputs: contains .tsv outputs from Interproscan.
 
-
+## Why these settings were chosen, and ideas for future optimization
 
 
 
