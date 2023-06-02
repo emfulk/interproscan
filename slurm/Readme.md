@@ -1,20 +1,39 @@
-# Parallelizing Interproscan with slurm
+# Parallelizing Interproscan with Slurm
 
 These scripts enable batch submission of multiple independent Interproscan analyses that are run in parallel using minimized amounts of computing resources and user oversight.
 
-A wrapper script (ips_stage.py) pulls a user-specified number of input files (in amino acid FASTA format) and writes an individual job submission for each input file (ips_slurm_template_render.py) based on a template (ips_template.sbatch). For jobs that are successfully completed (i.e. where Interproscan generates a output file with results), the input FASTA file and Interproscan output are moved to a new directory. Input files with jobs that do not successfully complete with the allotted computational resources are retained in a failures folder to be re-run with more resources.
+They were written in 2020-21 for the then-current version of Interproscan, using python scripting to parallelize the workflow according to a High-Throughput Computing model, specifically, using the "scavenge" queue in a cluster using the Slurm scheduling system. [Essentially, this high-throughput scavenge parallelization workflow follows the HTCondor model](https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=HowToScavengeCycles). The instructions for installation and execution therefore should be seen as historically specific to:
+
+1. The state of the Interproscan software at the time of the project (v. InterProScan-5.48-83.0), which is reflected in this repository ([November 2020](https://github.com/rice-crc/interproscan/tree/666d25486f38880939b8572ece42b6e4511d6af6)).
+1. The hardware on which the jobs were run ([the Rice University NOTS cluster](https://researchcomputing.rice.edu/rice-supercomputing-nots)).
+1. The scheduling software that ran them ([Slurm](https://slurm.schedmd.com/documentation.html)).
+
+A wrapper script (ips_stage.py) pulls a user-specified number of input files (in amino acid FASTA format) and writes an individual job submission for each input file (ips_slurm_template_render.py) based on a template (ips_template.sbatch). When a job starts, input FASTA files assigned to a given batch of work are moved from an INBOX folder to a FAILURES folder, until these jobs are successfully completed (i.e. where Interproscan generates a output file with results), at which point the input FASTA file is moved to an OUTBOX directory and the Interproscan output file is moved to an OUTPUTS directory. Input FASTA files with jobs that do not successfully complete with the allotted computational resources remain in the failures folder to be re-run later, usually with more resources.
 
 ![2302_readme](https://user-images.githubusercontent.com/63920521/219883990-601c660e-2034-4535-9964-c2db0cb1863a.png)
 
-This strategy enables analysis of large datasets of genomes with less manual oversight by the user. The instructions here are customized for the Rice NOTS cluster, which uses the SLURM job scheduler.
+This strategy enables analysis of large datasets of genomes with less manual oversight by the user.
 
 ## Installation
 
+
+### Introduction
+
+The below instructions, as outlined in the introductory text above, were written to be used with
+
+* The version of Interproscan that was current to early 2021
+* On the Rice University NOTS clusters
+* Using the Slurm scheduling system
+
+In order to reproduce this workflow, the below instructions will almost certainly have to be adapted to accommodate a newer version of Interproscan on your own university's cluster.
+
+### Instructions
+
 1. Download repo into /projects
 
-    `git clone https://github.com/rice-crc/`
+    `git clone https://github.com/rice-crc/interproscan.git`
 
-2. Following the [Interproscan installation instructions](https://interproscan-docs.readthedocs.io/en/latest/UserDocs.html?highlight=initial_setup.py):
+2. Following the [Interproscan installation instructions -- (from early 2021)](https://github.com/ebi-pf-team/interproscan-docs/tree/44db3fff0f3031cc8824d2fa1867c9645f53eb15):
     1. First launch an interactive job
 
         `srun --pty --ntasks=1 --mem-per-cpu=1000m --time=00:30:00 /bin/bash --partition=interactive`
@@ -70,7 +89,7 @@ This strategy enables analysis of large datasets of genomes with less manual ove
 
 ## Directory structure
 
-Five subdirectories are created to store input files (in amino acid FASTA format), Interproscan outputs (in tsv format), and SLURM files.
+Five subdirectories are created to store input files (in amino acid FASTA format), Interproscan outputs (in tsv format), and Slurm files.
 
 1. faa_inbox: contains input files to be analyzed, in amino acid fasta (.faa) format.
 2. faa_outbox: contains successfully analyzed input files.
