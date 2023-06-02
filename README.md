@@ -1,4 +1,4 @@
-# interproscan
+# Interproscan
 
 ## What is InterProScan?
 [InterPro](http://www.ebi.ac.uk/interpro/) is a database which integrates together predictive information about proteins' function from a number of partner resources, giving an overview of the families that a protein belongs to and the domains and sites it contains.
