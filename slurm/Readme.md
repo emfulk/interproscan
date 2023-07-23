@@ -14,6 +14,9 @@ A wrapper script (ips_stage.py) pulls a user-specified number of input files (in
 
 This strategy enables analysis of large datasets of genomes with less manual oversight by the user.
 
+An archived copy of this repo can be downloaded from the [Rice Digital Scholarship Archive](https://doi.org/10.25611/4S05-X831).
+
+
 ## Installation
 
 
